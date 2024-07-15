@@ -21,7 +21,7 @@ body {
 }
 
 .soundline {
-    margin: 0.5em;
+    margin: 2em;
 }
 
 .sound {
@@ -32,7 +32,7 @@ body {
     padding: 0.5em 0.5em;
     text-align: center;
     text-decoration: none;
-    font-size: 1em;
+    font-size: 2em;
     border-radius: 0.5em;
     cursor: pointer;
 }

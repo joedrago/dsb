@@ -1,6 +1,7 @@
 const fs = require("fs")
 const { WebSocketManager, WebSocketShardEvents, CompressionMethod } = require("@discordjs/ws")
 const { REST } = require("@discordjs/rest")
+const { spawnSync } = require("child_process")
 
 const WAITED_LONG_ENOUGH_MS = 5000
 
@@ -118,6 +119,12 @@ const main = async () => {
                 await downloadFile(soundURL, soundFilename)
             } else {
                 console.log(`Skipping: (${sound.name})`)
+            }
+
+            const wavFilename = `./web/sounds/${sound.sound_id}.wav`
+            if (!fs.existsSync(wavFilename)) {
+                console.log(`Converting: ${wavFilename}`)
+                spawnSync("ffmpeg", ["-i", soundFilename, wavFilename], { stdio: "inherit" })
             }
         }
     }

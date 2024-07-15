@@ -17,6 +17,7 @@ const main = () => {
 <head>
 <title>Discord Soundboard</title>
 <link rel="stylesheet" href="index.css">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 <script>
@@ -48,7 +49,7 @@ const playSound = (url) => {
 `
         for (const sound of server.sounds) {
             html += `
-<div class="soundline"><div class="sound" onclick="playSound('sounds/${sound.sound_id}.ogg')">${sound.name}</div></div>
+<div class="soundline"><div class="sound" onclick="playSound('sounds/${sound.sound_id}.wav')">${sound.name}</div></div>
 `
         }
 
