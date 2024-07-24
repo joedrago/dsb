@@ -2,6 +2,7 @@ const fs = require("fs")
 const { WebSocketManager, WebSocketShardEvents, CompressionMethod } = require("@discordjs/ws")
 const { REST } = require("@discordjs/rest")
 const { spawnSync } = require("child_process")
+const Jimp = require("jimp")
 
 const WAITED_LONG_ENOUGH_MS = 5000
 
@@ -65,6 +66,26 @@ const mkdir = (dir) => {
     }
 }
 
+const makeTextImage = (text, outputFilename) => {
+    return new Promise((resolve, reject) => {
+        const W = 400
+        const H = 225
+        const img = new Jimp(W, H, 'black')
+        Jimp.loadFont(Jimp.FONT_SANS_32_WHITE).then((font) => {
+            img.print(font, 0, 0, {
+                text: text,
+                alignmentX: Jimp.HORIZONTAL_ALIGN_CENTER,
+                alignmentY: Jimp.VERTICAL_ALIGN_MIDDLE,
+            }, W, H)
+            return img
+        }).then((img) => {
+            img.writeAsync(outputFilename).then(() => {
+                resolve(true)
+            })
+        })
+    })
+}
+
 const main = async () => {
     let config = JSON.parse(fs.readFileSync("harvest.json", "utf8"))
 
@@ -125,6 +146,20 @@ const main = async () => {
             if (!fs.existsSync(wavFilename)) {
                 console.log(`Converting: ${wavFilename}`)
                 spawnSync("ffmpeg", ["-i", soundFilename, wavFilename], { stdio: "inherit" })
+            }
+
+            const mp3Filename = `./web/sounds/${sound.sound_id}.mp3`
+            if (!fs.existsSync(mp3Filename)) {
+                console.log(`Converting: ${mp3Filename}`)
+                spawnSync("ffmpeg", ["-i", soundFilename, mp3Filename], { stdio: "inherit" })
+            }
+
+            const mp4Filename = `./web/sounds/${sound.sound_id}.mp4`
+            if (!fs.existsSync(mp4Filename)) {
+                const lole = await makeTextImage(sound.name, "tmp.png")
+                console.log(`Converting: ${mp4Filename}`)
+                spawnSync("ffmpeg", ["-loop", "1", "-i", "tmp.png", "-i", soundFilename, "-shortest", mp4Filename], { stdio: "inherit" })
+                fs.unlinkSync("tmp.png")
             }
         }
     }

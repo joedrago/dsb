@@ -5,6 +5,10 @@ body {
     font-family: monospace;
 }
 
+a {
+   text-decoration: none; 
+}
+
 .server {
     margin-bottom: 3em;
 }

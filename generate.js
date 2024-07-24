@@ -49,7 +49,7 @@ const playSound = (url) => {
 `
         for (const sound of server.sounds) {
             html += `
-<div class="soundline"><div class="sound" onclick="playSound('sounds/${sound.sound_id}.wav')">${sound.name}</div></div>
+<div class="soundline"><a href="sounds/${sound.sound_id}.mp4" class="sound" onclick="event.preventDefault();playSound('sounds/${sound.sound_id}.wav'); return false">${sound.name}</a></div>
 `
         }
 
